@@ -54,12 +54,4 @@ public class Tile : MonoBehaviour {
     public void ResetId() {
         id = -1;
     }
-
-    //void ValidClick() {
-    //    OnTileClick(true, id);
-    //}
-
-    //void InvalidClick() {
-    //    OnTileClick(false, id);
-    //}
 }

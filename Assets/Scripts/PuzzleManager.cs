@@ -27,16 +27,14 @@ public class PuzzleManager : MonoBehaviour {
         InitPuzzle();
     }
 
-    private void Update() {
-        if (Input.GetKeyDown(KeyCode.T)) {
-        }
-    }
-
     void HandleTileClick(int id) {
         if (id == -1) {
+            Debug.Log("Wrong guess, attempts remianing: " + attempts);
             DecrementAttempts();
             return;
         }
+
+        Debug.Log("Correct guess, waifu remaining: " + totalWaifuRemaining);
 
         bool waifuRemaining = grid.Any((Tile[] row) => {
             bool res = row.Any((Tile tile) => tile.id == id);
@@ -67,15 +65,10 @@ public class PuzzleManager : MonoBehaviour {
         waifusToSpawn = new List<string>();
         waifusToSpawn.Add("Basic");
         waifusToSpawn.Add("Basic");
-        waifusToSpawn.Add("Basic");
-        waifusToSpawn.Add("Basic");
+        totalWaifuRemaining = waifusToSpawn.Count;
     }
 
     void PrepareWaifus() {
-        if (waifusToSpawn.Count < 1) {
-            return;
-        }
-
         foreach (string type in waifusToSpawn) {
             List<List<int[]>> waifuPositions = new List<List<int[]>>();
             waifuPositions = WaifuPatterns.MapPatternToValidPositions(WaifuPatterns.WAIFU_TYPES.BASIC, grid);
@@ -83,13 +76,12 @@ public class PuzzleManager : MonoBehaviour {
             List<int[]> randomWaifuPosition = waifuPositions[randomWaifuPositionIndex];
             SpawnWaifu(randomWaifuPosition);
         }
-
     }
 
 
     void SpawnWaifu(List<int[]> positions) {
         foreach (int[] position in positions) {
-            grid[position[0]][position[1]].SetSprite();
+            //grid[position[0]][position[1]].SetSprite();
             grid[position[0]][position[1]].SetId(waifuId);
         }
         waifuId++;
@@ -123,13 +115,6 @@ public class PuzzleManager : MonoBehaviour {
 
     void ExitPuzzle() {
         SceneManager.LoadScene("Room");
-    }
-
-    void SpawnBasicWaifu(int row, int col, int id) {
-        for (int i = col; i < col + 4; i++) {
-            grid[row][i].SetSprite();
-            grid[row][i].SetId(id);
-        }
     }
 }
 
