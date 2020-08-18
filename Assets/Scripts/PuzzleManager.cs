@@ -16,9 +16,15 @@ public class PuzzleManager : MonoBehaviour {
     int waifuId = 0;
 
     private void Start() {
-        attempts = MAX_ATTEMPTS;
-        Tile.OnTileClick += HandleTileClick;
         InitPuzzle();
+    }
+
+    private void OnEnable() {
+        Tile.OnTileClick += HandleTileClick;
+    }
+
+    private void OnDisable() {
+        Tile.OnTileClick -= HandleTileClick;
     }
 
     void HandleTileClick(int id) {
@@ -41,10 +47,7 @@ public class PuzzleManager : MonoBehaviour {
 
     void InitPuzzle() {
         OnNewPuzzle?.Invoke();
-        PreparePuzzle();
-    }
-
-    void PreparePuzzle() {
+        attempts = MAX_ATTEMPTS;
         LoadWaifusToSpawn();
         PrepareWaifus();
     }
@@ -61,6 +64,7 @@ public class PuzzleManager : MonoBehaviour {
             List<List<int[]>> waifuPositions = new List<List<int[]>>();
             waifuPositions = WaifuPatterns.MapPatternToValidPositions(WaifuPatterns.WAIFU_TYPES.BASIC);
             int randomWaifuPositionIndex = UnityEngine.Random.Range(0, waifuPositions.Count);
+            Debug.Log("Hello" + randomWaifuPositionIndex + " " + waifuPositions.Count);
             List<int[]> randomWaifuPosition = waifuPositions[randomWaifuPositionIndex];
             SpawnWaifu(randomWaifuPosition);
         }

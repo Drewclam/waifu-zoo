@@ -3,21 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class WaifuPatterns : MonoBehaviour {
+public class WaifuPatterns : Singleton<WaifuPatterns> {
     public enum WAIFU_TYPES {
         BASIC
     }
     public static GridManager gridManager;
-    public static WaifuPatterns Instance;
+    public new static WaifuPatterns instance = null;
     static Dictionary<WAIFU_TYPES, PatternDelegate> waifuDictionary;
     delegate List<List<int[]>> PatternDelegate(Tile[][] grid);
     PatternDelegate myDelegate;
 
     private void Awake() {
-        Instance = this;
-    }
-
-    static WaifuPatterns() {
+        gridManager = FindObjectOfType<GridManager>();
         waifuDictionary = new Dictionary<WAIFU_TYPES, PatternDelegate>();
         waifuDictionary.Add(WAIFU_TYPES.BASIC, Basic);
     }
@@ -50,6 +47,7 @@ public class WaifuPatterns : MonoBehaviour {
                 validPositions.Add(validPosition);
             }
         }
+        Debug.Log("Valid positions  " + validPositions.Count);
         return validPositions;
     }
 

@@ -10,6 +10,10 @@ public class GridManager : MonoBehaviour {
     int MAX_ROW = 5;
     int MAX_COL = 5;
 
+    private void Start() {
+        InitGrid();
+    }
+
     public void InitGrid() {
         int col = 0;
         int row = 0;
