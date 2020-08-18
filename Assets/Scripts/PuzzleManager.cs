@@ -6,24 +6,18 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PuzzleManager : MonoBehaviour {
-    public Transform tiles;
     public delegate void NewPuzzle();
     public static event NewPuzzle OnNewPuzzle;
-    Tile[][] grid = new Tile[5][];
+    public GridManager gridManager;
     int MAX_ATTEMPTS = 10;
-    int MAX_COL = 5;
-    int MAX_ROW = 5;
     int attempts;
-    int tilesLeft;
     int totalWaifuRemaining;
     List<string> waifusToSpawn;
-    List<int[]> puzzleCoords;
     int waifuId = 0;
 
     private void Start() {
         attempts = MAX_ATTEMPTS;
         Tile.OnTileClick += HandleTileClick;
-        InitGrid();
         InitPuzzle();
     }
 
@@ -36,13 +30,7 @@ public class PuzzleManager : MonoBehaviour {
 
         Debug.Log("Correct guess, waifu remaining: " + totalWaifuRemaining);
 
-        bool waifuRemaining = grid.Any((Tile[] row) => {
-            bool res = row.Any((Tile tile) => tile.id == id);
-            return res;
-        });
-
-
-        if (!waifuRemaining) {
+        if (!gridManager.HasTileWithId(id)) {
             totalWaifuRemaining -= 1;
         }
 
@@ -71,7 +59,7 @@ public class PuzzleManager : MonoBehaviour {
     void PrepareWaifus() {
         foreach (string type in waifusToSpawn) {
             List<List<int[]>> waifuPositions = new List<List<int[]>>();
-            waifuPositions = WaifuPatterns.MapPatternToValidPositions(WaifuPatterns.WAIFU_TYPES.BASIC, grid);
+            waifuPositions = WaifuPatterns.MapPatternToValidPositions(WaifuPatterns.WAIFU_TYPES.BASIC);
             int randomWaifuPositionIndex = UnityEngine.Random.Range(0, waifuPositions.Count);
             List<int[]> randomWaifuPosition = waifuPositions[randomWaifuPositionIndex];
             SpawnWaifu(randomWaifuPosition);
@@ -81,29 +69,11 @@ public class PuzzleManager : MonoBehaviour {
 
     void SpawnWaifu(List<int[]> positions) {
         foreach (int[] position in positions) {
-            //grid[position[0]][position[1]].SetSprite();
-            grid[position[0]][position[1]].SetId(waifuId);
+            gridManager.SetTileId(position[0], position[1], waifuId);
         }
         waifuId++;
     }
 
-    void InitGrid() {
-        int col = 0;
-        int row = 0;
-        Tile[] rowTiles = new Tile[5];
-        foreach (Tile tile in tiles.GetComponentsInChildren<Tile>()) {
-            tile.SetColumn(col);
-            tile.SetRow(row);
-            rowTiles[col] = tile;
-            col++;
-            if (col >= MAX_COL) {
-                grid[row] = rowTiles;
-                rowTiles = new Tile[5];
-                col = 0;
-                row++;
-            }
-        }
-    }
 
     void DecrementAttempts() {
         attempts--;

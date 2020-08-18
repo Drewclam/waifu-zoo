@@ -7,6 +7,7 @@ public class WaifuPatterns : MonoBehaviour {
     public enum WAIFU_TYPES {
         BASIC
     }
+    public static GridManager gridManager;
     public static WaifuPatterns Instance;
     static Dictionary<WAIFU_TYPES, PatternDelegate> waifuDictionary;
     delegate List<List<int[]>> PatternDelegate(Tile[][] grid);
@@ -21,7 +22,8 @@ public class WaifuPatterns : MonoBehaviour {
         waifuDictionary.Add(WAIFU_TYPES.BASIC, Basic);
     }
 
-    public static List<List<int[]>> MapPatternToValidPositions(WAIFU_TYPES type, Tile[][] grid) {
+    public static List<List<int[]>> MapPatternToValidPositions(WAIFU_TYPES type) {
+        Tile[][] grid = gridManager.GetGrid();
         return RemoveInvalidPositions(waifuDictionary[type](grid), grid);
     }
 
