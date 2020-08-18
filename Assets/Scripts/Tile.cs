@@ -4,7 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Tile : MonoBehaviour {
+    public delegate void TileClickAction();
+    public static event TileClickAction OnEmptyTileClick;
+
     public Sprite flipPlaceholder;
+
+    public PuzzleManager puzzleManager;
+
     Image image;
 
     private void Awake() {
@@ -15,5 +21,7 @@ public class Tile : MonoBehaviour {
         // flip
         image.sprite = flipPlaceholder;
         // emit event that tile has been selected
+        OnEmptyTileClick();
+        //puzzleManager.DecrementAttempts();
     }
 }
