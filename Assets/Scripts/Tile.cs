@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Tile : MonoBehaviour {
-    public delegate void TileClickAction();
-    public static event TileClickAction OnEmptyTileClick;
-    public bool isValid;
+    public delegate void TileClickAction(int id);
+    public static event TileClickAction OnTileClick;
+    public int id = -1;
     public int col;
     public int row;
 
@@ -20,11 +20,9 @@ public class Tile : MonoBehaviour {
 
     public void Click() {
         image.sprite = flipPlaceholder;
-        if (isValid) {
-            ValidClick();
-            return;
-        }
-        InvalidClick();
+        int oldId = id;
+        SetId(-1);
+        OnTileClick(oldId);
     }
 
     public void SetColumn(int value) {
@@ -40,11 +38,15 @@ public class Tile : MonoBehaviour {
 
     }
 
-    void ValidClick() {
-
+    public void SetId(int value) {
+        id = value;
     }
 
-    void InvalidClick() {
-        OnEmptyTileClick();
-    }
+    //void ValidClick() {
+    //    OnTileClick(true, id);
+    //}
+
+    //void InvalidClick() {
+    //    OnTileClick(false, id);
+    //}
 }
