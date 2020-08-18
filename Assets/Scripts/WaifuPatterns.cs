@@ -9,45 +9,56 @@ public class WaifuPatterns : MonoBehaviour {
     }
     public static WaifuPatterns Instance;
     static Dictionary<WAIFU_TYPES, PatternDelegate> waifuDictionary;
-    delegate List<List<int[]>> PatternDelegate(Tile[][] grid, int row, int col);
+    delegate List<List<int[]>> PatternDelegate(Tile[][] grid);
     PatternDelegate myDelegate;
 
     private void Awake() {
         Instance = this;
     }
 
-    WaifuPatterns() {
+    static WaifuPatterns() {
         waifuDictionary = new Dictionary<WAIFU_TYPES, PatternDelegate>();
         waifuDictionary.Add(WAIFU_TYPES.BASIC, Basic);
     }
 
-    public static List<List<int[]>> MapPatternToValidPositions(WAIFU_TYPES type, Tile[][] grid, int row, int col) {
-        return waifuDictionary[type](grid, row, col);
+    public static List<List<int[]>> MapPatternToValidPositions(WAIFU_TYPES type, Tile[][] grid) {
+        return RemoveInvalidPositions(waifuDictionary[type](grid), grid);
     }
 
-    List<List<int[]>> Basic(Tile[][] grid, int rowIndex, int colIndex) {
-        Tile[] row = grid[rowIndex];
+    static List<List<int[]>> Basic(Tile[][] grid) {
         List<List<int[]>> validPositions = new List<List<int[]>>();
         bool invalidPositions = false;
 
-        foreach (Tile tile in row) {
-            invalidPositions = false;
-            for (int i = colIndex; i <= colIndex + 3; i++) {
-                if (row.ElementAtOrDefault(i) == null) {
-                    invalidPositions = true;
-                    break;
+        foreach (Tile[] row in grid) {
+            foreach (Tile tile in row) {
+                invalidPositions = false;
+                for (int i = tile.col; i <= tile.col + 3; i++) {
+                    if (row.ElementAtOrDefault(i) == null) {
+                        invalidPositions = true;
+                        break;
+                    }
                 }
-            }
-
-            if (invalidPositions) {
-                continue;
-            }
-
-            List<int[]> validPosition = new List<int[]>();
-            for (int i = colIndex; i <= colIndex + 3; i++) {
-                validPosition.Add(new int[] { rowIndex, i });
+                if (invalidPositions) {
+                    continue;
+                }
+                List<int[]> validPosition = new List<int[]>();
+                for (int i = tile.col; i <= tile.col + 3; i++) {
+                    validPosition.Add(new int[] { tile.row, i });
+                }
+                validPositions.Add(validPosition);
             }
         }
         return validPositions;
+    }
+
+    static List<List<int[]>> RemoveInvalidPositions(List<List<int[]>> waifuPositions, Tile[][] grid) {
+        List<List<int[]>> result = new List<List<int[]>>();
+        foreach (List<int[]> position in waifuPositions) {
+            bool validPosition = position.All((int[] coord) => grid[coord[0]][coord[1]].id == -1);
+            if (validPosition) {
+                result.Add(position);
+            }
+        }
+        return result;
     }
 }

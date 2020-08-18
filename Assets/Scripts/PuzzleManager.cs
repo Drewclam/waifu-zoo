@@ -5,7 +5,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-
 public class PuzzleManager : MonoBehaviour {
     public Transform tiles;
     public delegate void NewPuzzle();
@@ -17,7 +16,7 @@ public class PuzzleManager : MonoBehaviour {
     int attempts;
     int tilesLeft;
     int totalWaifuRemaining;
-    List<WAIFU_TYPES> waifusToSpawn;
+    List<string> waifusToSpawn;
     List<int[]> puzzleCoords;
     int waifuId = 0;
 
@@ -30,7 +29,6 @@ public class PuzzleManager : MonoBehaviour {
 
     private void Update() {
         if (Input.GetKeyDown(KeyCode.T)) {
-            InitPuzzle();
         }
     }
 
@@ -63,18 +61,14 @@ public class PuzzleManager : MonoBehaviour {
     void PreparePuzzle() {
         LoadWaifusToSpawn();
         PrepareWaifus();
-        SpawnWaifus();
     }
-
-    void SpawnWaifus() {
-    }
-
 
     void LoadWaifusToSpawn() {
-        waifusToSpawn = new List<WAIFU_TYPES>();
-        waifusToSpawn.Add(WAIFU_TYPES.BASIC);
-        waifusToSpawn.Add(WAIFU_TYPES.BASIC);
-        waifusToSpawn.Add(WAIFU_TYPES.BASIC);
+        waifusToSpawn = new List<string>();
+        waifusToSpawn.Add("Basic");
+        waifusToSpawn.Add("Basic");
+        waifusToSpawn.Add("Basic");
+        waifusToSpawn.Add("Basic");
     }
 
     void PrepareWaifus() {
@@ -82,52 +76,23 @@ public class PuzzleManager : MonoBehaviour {
             return;
         }
 
-        WAIFU_TYPES nextWaifu = waifusToSpawn.First();
-        waifusToSpawn.Remove(nextWaifu);
-
-        PrepareWaifus();
-        //foreach (WAIFU_TYPES type in waifusToSpawn) {
-        //    puzzleCoords = new List<int[]>();
-        //    switch (type) {
-        //        case WAIFU_TYPES.BASIC:
-        //            foreach (Tile[] row in grid) {
-        //                foreach (Tile tile in row) {
-        //                    if (SheepPattern(tile.row, tile.col)) {
-        //                        puzzleCoords.Add(new int[] { tile.row, tile.col });
-        //                        // store all possibel coords
-        //                        // randomly spawn a basic waifu at coord
-        //                        // continue to next waifu type
-        //                    }
-        //                }
-        //            }
-        //            SpawnWaifu(type);
-        //            break;
-        //        default:
-        //            break;
-        //    }
-        //}
+        foreach (string type in waifusToSpawn) {
+            List<List<int[]>> waifuPositions = new List<List<int[]>>();
+            waifuPositions = WaifuPatterns.MapPatternToValidPositions(WaifuPatterns.WAIFU_TYPES.BASIC, grid);
+            int randomWaifuPositionIndex = UnityEngine.Random.Range(0, waifuPositions.Count);
+            List<int[]> randomWaifuPosition = waifuPositions[randomWaifuPositionIndex];
+            SpawnWaifu(randomWaifuPosition);
+        }
 
     }
 
 
-    void SpawnWaifu(WAIFU_TYPES type) {
-        totalWaifuRemaining = waifusToSpawn.Count;
-
-        switch (type) {
-            case WAIFU_TYPES.BASIC:
-                if (puzzleCoords.Count < 1) {
-                    break;
-                }
-                // check for new pos
-                int randomIndex = UnityEngine.Random.Range(0, puzzleCoords.Count);
-                int row = puzzleCoords[randomIndex][0];
-                int col = puzzleCoords[randomIndex][1];
-                SpawnBasicWaifu(row, col, waifuId);
-                waifuId++;
-                break;
-            default:
-                break;
+    void SpawnWaifu(List<int[]> positions) {
+        foreach (int[] position in positions) {
+            grid[position[0]][position[1]].SetSprite();
+            grid[position[0]][position[1]].SetId(waifuId);
         }
+        waifuId++;
     }
 
     void InitGrid() {
@@ -167,3 +132,4 @@ public class PuzzleManager : MonoBehaviour {
         }
     }
 }
+
