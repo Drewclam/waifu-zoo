@@ -9,6 +9,7 @@ public class Tile : MonoBehaviour {
     public int id = -1;
     public int col;
     public int row;
+    public bool pendingWaifu = false;
 
     public Sprite flipPlaceholder;
 
@@ -16,6 +17,10 @@ public class Tile : MonoBehaviour {
 
     private void Awake() {
         image = GetComponent<Image>();
+    }
+
+    private void Start() {
+        PuzzleManager.OnNewPuzzle += ResetId;
     }
 
     public void Click() {
@@ -40,6 +45,14 @@ public class Tile : MonoBehaviour {
 
     public void SetId(int value) {
         id = value;
+    }
+
+    public void SetPending(bool value) {
+        pendingWaifu = value;
+    }
+
+    public void ResetId() {
+        id = -1;
     }
 
     //void ValidClick() {

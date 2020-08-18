@@ -5,8 +5,11 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+
 public class PuzzleManager : MonoBehaviour {
     public Transform tiles;
+    public delegate void NewPuzzle();
+    public static event NewPuzzle OnNewPuzzle;
     Tile[][] grid = new Tile[5][];
     int MAX_ATTEMPTS = 10;
     int MAX_COL = 5;
@@ -14,12 +17,21 @@ public class PuzzleManager : MonoBehaviour {
     int attempts;
     int tilesLeft;
     int totalWaifuRemaining;
+    List<WAIFU_TYPES> waifusToSpawn;
+    List<int[]> puzzleCoords;
+    int waifuId = 0;
 
     private void Start() {
         attempts = MAX_ATTEMPTS;
         Tile.OnTileClick += HandleTileClick;
         InitGrid();
         InitPuzzle();
+    }
+
+    private void Update() {
+        if (Input.GetKeyDown(KeyCode.T)) {
+            InitPuzzle();
+        }
     }
 
     void HandleTileClick(int id) {
@@ -44,25 +56,77 @@ public class PuzzleManager : MonoBehaviour {
     }
 
     void InitPuzzle() {
-        List<int[]> validPos = new List<int[]>();
-        foreach (Tile[] row in grid) {
-            foreach (Tile tile in row) {
-                if (SheepPattern(tile.col)) {
-                    validPos.Add(new int[] { tile.row, tile.col });
-                }
-            }
+        OnNewPuzzle?.Invoke();
+        PreparePuzzle();
+    }
+
+    void PreparePuzzle() {
+        LoadWaifusToSpawn();
+        PrepareWaifus();
+        SpawnWaifus();
+    }
+
+    void SpawnWaifus() {
+    }
+
+
+    void LoadWaifusToSpawn() {
+        waifusToSpawn = new List<WAIFU_TYPES>();
+        waifusToSpawn.Add(WAIFU_TYPES.BASIC);
+        waifusToSpawn.Add(WAIFU_TYPES.BASIC);
+        waifusToSpawn.Add(WAIFU_TYPES.BASIC);
+    }
+
+    void PrepareWaifus() {
+        if (waifusToSpawn.Count < 1) {
+            return;
         }
 
-        int spots = 2;
-        int waifuId = 0;
-        totalWaifuRemaining = spots;
+        WAIFU_TYPES nextWaifu = waifusToSpawn.First();
+        waifusToSpawn.Remove(nextWaifu);
 
-        for (int i = 0; i < spots; i++) {
-            int randomIndex = UnityEngine.Random.Range(0, validPos.Count);
-            int row = validPos[randomIndex][0];
-            int col = validPos[randomIndex][1];
-            SpawnSheep(row, col, waifuId);
-            waifuId++;
+        PrepareWaifus();
+        //foreach (WAIFU_TYPES type in waifusToSpawn) {
+        //    puzzleCoords = new List<int[]>();
+        //    switch (type) {
+        //        case WAIFU_TYPES.BASIC:
+        //            foreach (Tile[] row in grid) {
+        //                foreach (Tile tile in row) {
+        //                    if (SheepPattern(tile.row, tile.col)) {
+        //                        puzzleCoords.Add(new int[] { tile.row, tile.col });
+        //                        // store all possibel coords
+        //                        // randomly spawn a basic waifu at coord
+        //                        // continue to next waifu type
+        //                    }
+        //                }
+        //            }
+        //            SpawnWaifu(type);
+        //            break;
+        //        default:
+        //            break;
+        //    }
+        //}
+
+    }
+
+
+    void SpawnWaifu(WAIFU_TYPES type) {
+        totalWaifuRemaining = waifusToSpawn.Count;
+
+        switch (type) {
+            case WAIFU_TYPES.BASIC:
+                if (puzzleCoords.Count < 1) {
+                    break;
+                }
+                // check for new pos
+                int randomIndex = UnityEngine.Random.Range(0, puzzleCoords.Count);
+                int row = puzzleCoords[randomIndex][0];
+                int col = puzzleCoords[randomIndex][1];
+                SpawnBasicWaifu(row, col, waifuId);
+                waifuId++;
+                break;
+            default:
+                break;
         }
     }
 
@@ -96,17 +160,7 @@ public class PuzzleManager : MonoBehaviour {
         SceneManager.LoadScene("Room");
     }
 
-    bool SheepPattern(int index) {
-        foreach (Tile[] row in grid) {
-            Tile lastTile = Array.Find(row, (Tile tile) => tile.col == (index + 3));
-            if (lastTile != null) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    void SpawnSheep(int row, int col, int id) {
+    void SpawnBasicWaifu(int row, int col, int id) {
         for (int i = col; i < col + 4; i++) {
             grid[row][i].SetSprite();
             grid[row][i].SetId(id);
