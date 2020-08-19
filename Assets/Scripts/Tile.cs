@@ -8,6 +8,7 @@ public class Tile : MonoBehaviour {
     public static event TileClickAction OnTileClick;
     public int col;
     public int row;
+    bool selected = false;
     Waifu waifu;
 
     public Sprite flipPlaceholder;
@@ -18,11 +19,11 @@ public class Tile : MonoBehaviour {
         image = GetComponent<Image>();
     }
 
-    private void Start() {
-        PuzzleManager.OnPreparePuzzle += ResetId;
-    }
-
     public void Click() {
+        if (selected) {
+            return;
+        }
+        selected = true;
         image.sprite = flipPlaceholder;
         Waifu tempWaifu = waifu;
         SetWaifu(null);
@@ -54,12 +55,5 @@ public class Tile : MonoBehaviour {
 
     public int GetId() {
         return waifu.id;
-    }
-
-    void ResetId() {
-        if (waifu != null) {
-            waifu.ResetId();
-            GetComponent<DebugId>().SetId(waifu.id);
-        }
     }
 }

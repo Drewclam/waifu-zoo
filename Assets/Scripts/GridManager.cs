@@ -14,6 +14,14 @@ public class GridManager : MonoBehaviour {
         InitGrid();
     }
 
+    private void OnEnable() {
+        PuzzleManager.OnPreparePuzzle += InitGrid;
+    }
+
+    private void OnDisable() {
+        PuzzleManager.OnPreparePuzzle -= InitGrid;
+    }
+
     public void InitGrid() {
         int col = 0;
         int row = 0;
