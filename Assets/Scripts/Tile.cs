@@ -4,12 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Tile : MonoBehaviour {
-    public delegate void TileClickAction(int id);
+    public delegate void TileClickAction(Waifu waifu);
     public static event TileClickAction OnTileClick;
-    public int id = -1;
     public int col;
     public int row;
-    public bool pendingWaifu = false;
+    Waifu waifu;
 
     public Sprite flipPlaceholder;
 
@@ -20,14 +19,14 @@ public class Tile : MonoBehaviour {
     }
 
     private void Start() {
-        PuzzleManager.OnNewPuzzle += ResetId;
+        PuzzleManager.OnPreparePuzzle += ResetId;
     }
 
     public void Click() {
         image.sprite = flipPlaceholder;
-        int oldId = id;
-        SetId(-1);
-        OnTileClick(oldId);
+        Waifu tempWaifu = waifu;
+        SetWaifu(null);
+        OnTileClick(tempWaifu);
     }
 
     public void SetColumn(int value) {
@@ -40,18 +39,27 @@ public class Tile : MonoBehaviour {
 
     public void SetSprite() {
         image.sprite = null;
-
     }
 
-    public void SetId(int value) {
-        id = value;
+    public void SetWaifu(Waifu value) {
+        waifu = value;
+        if (waifu != null) {
+            GetComponent<DebugId>().SetId(waifu.id);
+        }
     }
 
-    public void SetPending(bool value) {
-        pendingWaifu = value;
+    public bool HasWaifu() {
+        return waifu == null ? false : true;
     }
 
-    public void ResetId() {
-        id = -1;
+    public int GetId() {
+        return waifu.id;
+    }
+
+    void ResetId() {
+        if (waifu != null) {
+            waifu.ResetId();
+            GetComponent<DebugId>().SetId(waifu.id);
+        }
     }
 }

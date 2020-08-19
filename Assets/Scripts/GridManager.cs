@@ -32,18 +32,25 @@ public class GridManager : MonoBehaviour {
         }
     }
 
-    public void SetTileId(int row, int col, int id) {
-        grid[row][col].SetId(id);
-    }
-
-    public bool HasTileWithId(int id) {
+    public bool AnyTileWithWaifuId(int id) {
         return grid.Any((Tile[] row) => {
-            bool res = row.Any((Tile tile) => tile.id == id);
+            bool res = row.Any((Tile tile) => {
+                if (tile.HasWaifu()) {
+                    if (tile.GetId() == id) {
+                        return true;
+                    };
+                }
+                return false;
+            });
             return res;
         });
     }
 
     public Tile[][] GetGrid() {
         return grid;
+    }
+
+    public Tile GetTile(int row, int col) {
+        return grid[row][col];
     }
 }

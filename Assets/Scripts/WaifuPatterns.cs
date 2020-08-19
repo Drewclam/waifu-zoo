@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class WaifuPatterns : Singleton<WaifuPatterns> {
     public enum WAIFU_TYPES {
+        NULL,
         BASIC
     }
     public static GridManager gridManager;
@@ -54,7 +55,7 @@ public class WaifuPatterns : Singleton<WaifuPatterns> {
     static List<List<int[]>> RemoveInvalidPositions(List<List<int[]>> waifuPositions, Tile[][] grid) {
         List<List<int[]>> result = new List<List<int[]>>();
         foreach (List<int[]> position in waifuPositions) {
-            bool validPosition = position.All((int[] coord) => grid[coord[0]][coord[1]].id == -1);
+            bool validPosition = position.All((int[] coord) => !grid[coord[0]][coord[1]].HasWaifu());
             if (validPosition) {
                 result.Add(position);
             }
