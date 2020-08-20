@@ -40,7 +40,6 @@ public class GridManager : MonoBehaviour {
         return grid.Any((Tile[] row) => {
             return row.Any((Tile tile) => {
                 if (tile.HasWaifu()) {
-                    Debug.Log("Tile id" + tile.GetId() + " group id: " + groupId);
                     if (groupId != -1 && tile.GetId() == groupId) {
                         return true;
                     };
@@ -48,6 +47,18 @@ public class GridManager : MonoBehaviour {
                 return false;
             });
         });
+    }
+
+    public int GetTileCountById(int groupId) {
+        int tileCount = 0;
+        foreach (Tile[] row in grid) {
+            foreach (Tile tile in row) {
+                if (tile.GetId() == groupId) {
+                    tileCount++;
+                }
+            }
+        }
+        return tileCount;
     }
 
     public Tile[][] GetGrid() {

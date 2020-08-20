@@ -24,7 +24,7 @@ public class Tile : MonoBehaviour {
     Sprite bottomWaifuSprite;
     Image image;
 
-    int id;
+    int id = -1;
 
     private void Awake() {
         image = GetComponent<Image>();

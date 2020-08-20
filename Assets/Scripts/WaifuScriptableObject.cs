@@ -12,5 +12,6 @@ public class WaifuScriptableObject : ScriptableObject {
     public Sprite enabledSprite;
     public Sprite disabledSprite;
     public Type type;
-    public int id;
+    // TODO: grab value from pattern helper
+    public int startingTileCount;
 }

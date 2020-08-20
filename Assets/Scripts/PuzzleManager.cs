@@ -8,16 +8,42 @@ using UnityEngine.SceneManagement;
 public class PuzzleManager : MonoBehaviour {
     static int WAIFU_GROUP_ID = 0;
 
+    public struct PuzzleWaifu {
+        public WaifuScriptableObject waifu;
+        public int groupId;
+        public List<int[]> positions;
+        public int tilesLeft;
+        public PuzzleWaifu(WaifuScriptableObject _waifu, List<int[]> _positions, GridManager gridManager) {
+            waifu = _waifu;
+            groupId = WAIFU_GROUP_ID;
+            positions = _positions;
+            tilesLeft = gridManager.GetTileCountById(WAIFU_GROUP_ID);
+
+            WAIFU_GROUP_ID++;
+        }
+
+        public void SetTilesLeft(int value) {
+            tilesLeft = value;
+        }
+    }
+
     public WaifuScriptableObject basicWaifu;
+    public GridManager gridManager;
+
     public delegate void PreparePuzzle();
     public static event PreparePuzzle OnPreparePuzzle;
-    public delegate void PuzzleReady(List<WaifuScriptableObject.Type> List);
+
+    public delegate void PuzzleReady(List<PuzzleWaifu> waifus);
     public static event PuzzleReady OnPuzzleReady;
-    public GridManager gridManager;
+
+    public delegate void PuzzleChange(List<PuzzleWaifu> loadedWaifus);
+    public static event PuzzleChange OnPuzzleChange;
+
+    public List<PuzzleWaifu> waifusToSpawn;
+    List<WaifuScriptableObject> HARD_CODED_WAIFUS_TO_SPAWN;
     int MAX_ATTEMPTS = 10;
     int attempts;
     int totalWaifuRemaining;
-    List<WaifuScriptableObject.Type> waifusToSpawn;
 
     private void Start() {
         InitPuzzle();
@@ -31,6 +57,13 @@ public class PuzzleManager : MonoBehaviour {
         Tile.OnTileClick -= HandleTileClick;
     }
 
+    void UpdatePuzzleCount() {
+        foreach (PuzzleWaifu waifu in waifusToSpawn) {
+            int tilesLeft = gridManager.GetTileCountById(waifu.groupId);
+            waifu.SetTilesLeft(tilesLeft);
+        }
+    }
+
     void HandleTileClick(WaifuScriptableObject waifu, int groupId) {
         if (waifu == null) {
             Debug.Log("Wrong guess, attempts remianing: " + attempts);
@@ -39,11 +72,14 @@ public class PuzzleManager : MonoBehaviour {
         }
 
         Debug.Log("Correct guess, waifu remaining: " + totalWaifuRemaining);
-
-        if (!gridManager.AnyTileGroupWithId(groupId)) {
+        int tilesLeft = gridManager.GetTileCountById(groupId);
+        Debug.Log("Tiles left: " + tilesLeft);
+        if (tilesLeft < 1) {
             totalWaifuRemaining -= 1;
         }
         Debug.Log("Waifu remaining: " + totalWaifuRemaining);
+
+        OnPuzzleChange?.Invoke(waifusToSpawn);
 
         if (totalWaifuRemaining < 1) {
             SceneManager.LoadScene("Win Room");
@@ -54,35 +90,48 @@ public class PuzzleManager : MonoBehaviour {
         OnPreparePuzzle?.Invoke();
         attempts = MAX_ATTEMPTS;
         LoadWaifusToSpawn();
-        PrepareWaifus();
+        PrepareWaifus(HARD_CODED_WAIFUS_TO_SPAWN);
+        //SpawnWaifus();
         OnPuzzleReady?.Invoke(waifusToSpawn);
     }
 
     void LoadWaifusToSpawn() {
-        waifusToSpawn = new List<WaifuScriptableObject.Type>();
-        waifusToSpawn.Add(WaifuScriptableObject.Type.BASIC);
-        waifusToSpawn.Add(WaifuScriptableObject.Type.BASIC);
+        HARD_CODED_WAIFUS_TO_SPAWN = new List<WaifuScriptableObject>();
+        HARD_CODED_WAIFUS_TO_SPAWN.Add(basicWaifu);
+        HARD_CODED_WAIFUS_TO_SPAWN.Add(basicWaifu);
+        //HARD_CODED_WAIFUS_TO_SPAWN.Add(basicWaifu);
+        //HARD_CODED_WAIFUS_TO_SPAWN.Add(basicWaifu);
+        //HARD_CODED_WAIFUS_TO_SPAWN.Add(basicWaifu);
+        //HARD_CODED_WAIFUS_TO_SPAWN.Add(basicWaifu);
+    }
+
+    void PrepareWaifus(List<WaifuScriptableObject> waifus) {
+        waifusToSpawn = new List<PuzzleWaifu>();
+        foreach (WaifuScriptableObject waifu in waifus) {
+            List<List<int[]>> waifuPositions = new List<List<int[]>>();
+            waifuPositions = WaifuPatterns.MapTypeToAllPositions(waifu.type);
+            int randomWaifuPositionIndex = UnityEngine.Random.Range(0, waifuPositions.Count);
+            List<int[]> randomWaifuPosition = waifuPositions[randomWaifuPositionIndex];
+            PuzzleWaifu puzzleWaifu = new PuzzleWaifu(waifu, randomWaifuPosition, gridManager);
+            waifusToSpawn.Add(puzzleWaifu);
+            SpawnWaifu(puzzleWaifu);
+        }
         totalWaifuRemaining = waifusToSpawn.Count;
     }
 
-    void PrepareWaifus() {
-        foreach (WaifuScriptableObject.Type type in waifusToSpawn) {
-            List<List<int[]>> waifuPositions = new List<List<int[]>>();
-            waifuPositions = WaifuPatterns.MapTypeToAllPositions(type);
-            int randomWaifuPositionIndex = UnityEngine.Random.Range(0, waifuPositions.Count);
-            Debug.Log("Positions: " + waifuPositions.Count);
-            List<int[]> randomWaifuPosition = waifuPositions[randomWaifuPositionIndex];
-            SpawnBasicWaifu(randomWaifuPosition);
+    void SpawnWaifu(PuzzleWaifu puzzleWaifu) {
+        foreach (int[] position in puzzleWaifu.positions) {
+            gridManager.GetTile(position[0], position[1]).SetWaifu(puzzleWaifu.waifu, puzzleWaifu.groupId);
         }
     }
 
-
-    void SpawnBasicWaifu(List<int[]> positions) {
-        foreach (int[] position in positions) {
-            gridManager.GetTile(position[0], position[1]).SetWaifu(basicWaifu, WAIFU_GROUP_ID);
-        }
-        WAIFU_GROUP_ID++;
-    }
+    //void SpawnWaifus() {
+    //    foreach (PuzzleWaifu puzzleWaifu in waifusToSpawn) {
+    //        foreach (int[] position in puzzleWaifu.positions) {
+    //            gridManager.GetTile(position[0], position[1]).SetWaifu(puzzleWaifu.waifu, puzzleWaifu.groupId);
+    //        }
+    //    }
+    //}
 
 
     void DecrementAttempts() {

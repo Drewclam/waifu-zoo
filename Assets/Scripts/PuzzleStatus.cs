@@ -3,35 +3,48 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PuzzleStatus : MonoBehaviour {
-    public GameObject statusObject;
-    GuessProgress[] items;
+    public GameObject statusItemPrefab;
+    //PuzzleStatusItem[] items;
 
     private void Awake() {
-        items = GetComponentsInChildren<GuessProgress>();
+        //items = GetComponentsInChildren<PuzzleStatusItem>();
     }
 
     private void OnEnable() {
-        //Tile.OnTileClick += UpdateState;
         PuzzleManager.OnPuzzleReady += Init;
+        PuzzleManager.OnPuzzleChange += UpdateWaifus;
     }
 
     private void OnDisable() {
         PuzzleManager.OnPuzzleReady -= Init;
+        PuzzleManager.OnPuzzleChange -= UpdateWaifus;
     }
 
-    public void LoadWaifus() {
-
+    public void UpdateWaifus(List<PuzzleManager.PuzzleWaifu> loadedWaifus) {
+        Debug.Log("Update");
+        foreach (PuzzleManager.PuzzleWaifu puzzleWaifu in loadedWaifus) {
+            PuzzleStatusItem[] statusItems = GetComponentsInChildren<PuzzleStatusItem>();
+            foreach (PuzzleStatusItem statusItem in statusItems) {
+                if (statusItem.GetGroupId() == puzzleWaifu.groupId) {
+                    statusItem.SetName(puzzleWaifu.waifu.waifuName);
+                    statusItem.SetTilesRemaining(puzzleWaifu.tilesLeft);
+                    statusItem.SetSprite(puzzleWaifu.waifu.enabledSprite);
+                }
+            }
+        }
     }
 
-    public void Init(List<WaifuScriptableObject.Type> types) {
+    public void Init(List<PuzzleManager.PuzzleWaifu> loadedWaifus) {
         foreach (GameObject statusObject in transform) {
             Destroy(statusObject);
         }
-        foreach (WaifuScriptableObject.Type type in types) {
-            GameObject instance = Instantiate(statusObject, transform);
-            GuessProgress guessProgress = instance.GetComponent<GuessProgress>();
-            //guessProgress.SetName(WaifuScriptableObject.MapTypeToName(type));
-            guessProgress.SetTilesRemaining(4);
+        foreach (PuzzleManager.PuzzleWaifu puzzleWaifu in loadedWaifus) {
+            GameObject instance = Instantiate(statusItemPrefab, transform);
+            PuzzleStatusItem guessProgress = instance.GetComponent<PuzzleStatusItem>();
+            guessProgress.SetName(puzzleWaifu.waifu.waifuName);
+            guessProgress.SetTilesRemaining(puzzleWaifu.tilesLeft);
+            guessProgress.SetSprite(puzzleWaifu.waifu.enabledSprite);
+            guessProgress.SetGroupId(puzzleWaifu.groupId);
         }
     }
 }
