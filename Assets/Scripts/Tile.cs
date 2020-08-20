@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Tile : MonoBehaviour {
-    public delegate void TileClickAction(WaifuScriptableObject waifu);
+    public delegate void TileClickAction(WaifuScriptableObject waifu, int groupId);
     public static event TileClickAction OnTileClick;
     public int col;
     public int row;
@@ -22,8 +22,9 @@ public class Tile : MonoBehaviour {
 
     Sprite topWaifuSprite;
     Sprite bottomWaifuSprite;
-
     Image image;
+
+    int id;
 
     private void Awake() {
         image = GetComponent<Image>();
@@ -48,12 +49,12 @@ public class Tile : MonoBehaviour {
         selected = true;
 
         if (bottomWaifuSprite) {
-            Debug.Log("Set");
             image.sprite = bottomWaifuSprite;
         }
         WaifuScriptableObject tempWaifu = waifu;
-        SetWaifu(null, default);
-        OnTileClick(tempWaifu);
+        int tempGroupId = id;
+        SetWaifu(null, -1);
+        OnTileClick(tempWaifu, tempGroupId);
     }
 
     public void SetColumn(int value) {
@@ -64,8 +65,9 @@ public class Tile : MonoBehaviour {
         row = value;
     }
 
-    public void SetWaifu(WaifuScriptableObject value, int id) {
+    public void SetWaifu(WaifuScriptableObject value, int tileGroupId) {
         waifu = value;
+        id = tileGroupId;
         GetComponent<DebugId>().SetId(id);
         if (waifu != null) {
             topWaifuSprite = value.enabledSprite;
@@ -79,6 +81,6 @@ public class Tile : MonoBehaviour {
     }
 
     public int GetId() {
-        return waifu.id;
+        return id;
     }
 }

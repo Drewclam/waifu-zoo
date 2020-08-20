@@ -31,7 +31,7 @@ public class PuzzleManager : MonoBehaviour {
         Tile.OnTileClick -= HandleTileClick;
     }
 
-    void HandleTileClick(WaifuScriptableObject waifu) {
+    void HandleTileClick(WaifuScriptableObject waifu, int groupId) {
         if (waifu == null) {
             Debug.Log("Wrong guess, attempts remianing: " + attempts);
             DecrementAttempts();
@@ -40,7 +40,7 @@ public class PuzzleManager : MonoBehaviour {
 
         Debug.Log("Correct guess, waifu remaining: " + totalWaifuRemaining);
 
-        if (!gridManager.AnyTileWithWaifuId(waifu.id)) {
+        if (!gridManager.AnyTileGroupWithId(groupId)) {
             totalWaifuRemaining -= 1;
         }
         Debug.Log("Waifu remaining: " + totalWaifuRemaining);

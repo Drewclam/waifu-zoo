@@ -36,17 +36,17 @@ public class GridManager : MonoBehaviour {
         }
     }
 
-    public bool AnyTileWithWaifuId(int id) {
+    public bool AnyTileGroupWithId(int groupId) {
         return grid.Any((Tile[] row) => {
-            bool res = row.Any((Tile tile) => {
+            return row.Any((Tile tile) => {
                 if (tile.HasWaifu()) {
-                    if (tile.GetId() == id) {
+                    Debug.Log("Tile id" + tile.GetId() + " group id: " + groupId);
+                    if (groupId != -1 && tile.GetId() == groupId) {
                         return true;
                     };
                 }
                 return false;
             });
-            return res;
         });
     }
 
