@@ -26,6 +26,7 @@ public class PuzzleManager : MonoBehaviour {
     public WaifuScriptableObject basicWaifu;
     public GridManager gridManager;
     public AttemptText attemptText;
+    GameManager gameManager;
 
     public delegate void PreparePuzzle();
     public static event PreparePuzzle OnPreparePuzzle;
@@ -41,6 +42,10 @@ public class PuzzleManager : MonoBehaviour {
     int MAX_ATTEMPTS = 10;
     int attempts;
     int totalWaifuRemaining;
+
+    private void Awake() {
+        gameManager = FindObjectOfType<GameManager>();
+    }
 
     private void Start() {
         InitPuzzle();
@@ -79,6 +84,7 @@ public class PuzzleManager : MonoBehaviour {
         OnPuzzleChange?.Invoke(waifusToSpawn);
 
         if (totalWaifuRemaining < 1) {
+            gameManager.LevelUpBasicWaifu();
             ExitPuzzle();
         }
     }
