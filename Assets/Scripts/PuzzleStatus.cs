@@ -4,11 +4,6 @@ using UnityEngine;
 
 public class PuzzleStatus : MonoBehaviour {
     public GameObject statusItemPrefab;
-    //PuzzleStatusItem[] items;
-
-    private void Awake() {
-        //items = GetComponentsInChildren<PuzzleStatusItem>();
-    }
 
     private void OnEnable() {
         PuzzleManager.OnPuzzleReady += Init;
@@ -21,7 +16,6 @@ public class PuzzleStatus : MonoBehaviour {
     }
 
     public void UpdateWaifus(List<PuzzleManager.PuzzleWaifu> loadedWaifus) {
-        Debug.Log("Update");
         foreach (PuzzleManager.PuzzleWaifu puzzleWaifu in loadedWaifus) {
             PuzzleStatusItem[] statusItems = GetComponentsInChildren<PuzzleStatusItem>();
             foreach (PuzzleStatusItem statusItem in statusItems) {
@@ -35,6 +29,7 @@ public class PuzzleStatus : MonoBehaviour {
     }
 
     public void Init(List<PuzzleManager.PuzzleWaifu> loadedWaifus) {
+        Debug.Log(loadedWaifus[0].tilesLeft);
         foreach (GameObject statusObject in transform) {
             Destroy(statusObject);
         }
