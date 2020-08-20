@@ -10,10 +10,6 @@ public class GridManager : MonoBehaviour {
     int MAX_ROW = 5;
     int MAX_COL = 5;
 
-    private void Start() {
-        InitGrid();
-    }
-
     private void OnEnable() {
         PuzzleManager.OnPreparePuzzle += InitGrid;
     }

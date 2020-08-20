@@ -4,14 +4,24 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Tile : MonoBehaviour {
-    public delegate void TileClickAction(Waifu waifu);
+    public delegate void TileClickAction(WaifuScriptableObject waifu);
     public static event TileClickAction OnTileClick;
     public int col;
     public int row;
     bool selected = false;
-    Waifu waifu;
+    WaifuScriptableObject waifu;
 
-    public Sprite flipPlaceholder;
+    public Sprite bottomBasicSprite;
+    public Sprite topBasicSprite;
+    public Sprite bottomAppleSprite;
+    public Sprite topAppleSprite;
+    public Sprite bottomCoinSprite;
+    public Sprite topCoinSprite;
+    public Sprite bottomSockSprite;
+    public Sprite topSockSprite;
+
+    Sprite topWaifuSprite;
+    Sprite bottomWaifuSprite;
 
     Image image;
 
@@ -19,14 +29,30 @@ public class Tile : MonoBehaviour {
         image = GetComponent<Image>();
     }
 
+    private void OnEnable() {
+        PuzzleManager.OnPreparePuzzle += Init;
+    }
+
+    private void OnDisable() {
+        PuzzleManager.OnPreparePuzzle -= Init;
+    }
+
+    public void Init() {
+        image.sprite = topBasicSprite;
+    }
+
     public void Click() {
         if (selected) {
             return;
         }
         selected = true;
-        image.sprite = flipPlaceholder;
-        Waifu tempWaifu = waifu;
-        SetWaifu(null);
+
+        if (bottomWaifuSprite) {
+            Debug.Log("Set");
+            image.sprite = bottomWaifuSprite;
+        }
+        WaifuScriptableObject tempWaifu = waifu;
+        SetWaifu(null, default);
         OnTileClick(tempWaifu);
     }
 
@@ -38,14 +64,13 @@ public class Tile : MonoBehaviour {
         row = value;
     }
 
-    public void SetSprite() {
-        image.sprite = null;
-    }
-
-    public void SetWaifu(Waifu value) {
+    public void SetWaifu(WaifuScriptableObject value, int id) {
         waifu = value;
+        GetComponent<DebugId>().SetId(id);
         if (waifu != null) {
-            GetComponent<DebugId>().SetId(waifu.id);
+            topWaifuSprite = value.enabledSprite;
+            bottomWaifuSprite = value.disabledSprite;
+            image.sprite = topWaifuSprite;
         }
     }
 

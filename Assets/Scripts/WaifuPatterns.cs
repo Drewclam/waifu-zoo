@@ -4,23 +4,19 @@ using System.Linq;
 using UnityEngine;
 
 public class WaifuPatterns : Singleton<WaifuPatterns> {
-    public enum WAIFU_TYPES {
-        NULL,
-        BASIC
-    }
     public static GridManager gridManager;
     public new static WaifuPatterns instance = null;
-    static Dictionary<WAIFU_TYPES, PatternDelegate> waifuDictionary;
+    static Dictionary<WaifuScriptableObject.Type, PatternDelegate> waifuDictionary;
     delegate List<List<int[]>> PatternDelegate(Tile[][] grid);
     PatternDelegate myDelegate;
 
     private void Awake() {
         gridManager = FindObjectOfType<GridManager>();
-        waifuDictionary = new Dictionary<WAIFU_TYPES, PatternDelegate>();
-        waifuDictionary.Add(WAIFU_TYPES.BASIC, Basic);
+        waifuDictionary = new Dictionary<WaifuScriptableObject.Type, PatternDelegate>();
+        waifuDictionary.Add(WaifuScriptableObject.Type.BASIC, Basic);
     }
 
-    public static List<List<int[]>> MapPatternToValidPositions(WAIFU_TYPES type) {
+    public static List<List<int[]>> MapTypeToAllPositions(WaifuScriptableObject.Type type) {
         Tile[][] grid = gridManager.GetGrid();
         return RemoveInvalidPositions(waifuDictionary[type](grid), grid);
     }
@@ -48,7 +44,6 @@ public class WaifuPatterns : Singleton<WaifuPatterns> {
                 validPositions.Add(validPosition);
             }
         }
-        Debug.Log("Valid positions  " + validPositions.Count);
         return validPositions;
     }
 

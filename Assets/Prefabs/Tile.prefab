@@ -39,7 +39,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 29, y: 29}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1008193359081607960
 CanvasRenderer:
@@ -62,14 +62,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: f84ce13bacd8f0e4a89d2751e2d06bc1, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -91,7 +91,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   col: 0
   row: 0
-  flipPlaceholder: {fileID: 21300000, guid: 313b856126d46db439870188ad17c81b, type: 3}
+  bottomBasicSprite: {fileID: 21300000, guid: 7f1a5cfe81d3a7b41b4f997198da1dd5, type: 3}
+  topBasicSprite: {fileID: 21300000, guid: 08f6f4bd8ce1570418eae132e50f9dde, type: 3}
+  bottomAppleSprite: {fileID: 0}
+  topAppleSprite: {fileID: 21300000, guid: 7535ab1daa111874dac4a14f2fd768f0, type: 3}
+  bottomCoinSprite: {fileID: 0}
+  topCoinSprite: {fileID: 21300000, guid: 8ada3938c16a80749891ecbbf7e6559b, type: 3}
+  bottomSockSprite: {fileID: 0}
+  topSockSprite: {fileID: 21300000, guid: 24e7e1f8d1ae7c34db5a06cf34f1a4fe, type: 3}
 --- !u!114 &8262036699490343072
 MonoBehaviour:
   m_ObjectHideFlags: 0
