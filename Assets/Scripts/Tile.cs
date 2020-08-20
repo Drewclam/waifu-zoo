@@ -13,14 +13,8 @@ public class Tile : MonoBehaviour {
     bool selected = false;
     WaifuScriptableObject waifu;
 
-    public Sprite bottomBasicSprite;
-    public Sprite topBasicSprite;
-    public Sprite bottomAppleSprite;
-    public Sprite topAppleSprite;
-    public Sprite bottomCoinSprite;
-    public Sprite topCoinSprite;
-    public Sprite bottomSockSprite;
-    public Sprite topSockSprite;
+    public Sprite selectedTileSprite;
+    public List<Sprite> tileSprites;
 
     Sprite topWaifuSprite;
     Sprite bottomWaifuSprite;
@@ -41,7 +35,7 @@ public class Tile : MonoBehaviour {
     }
 
     public void Init() {
-        image.sprite = topBasicSprite;
+        LoadRandomTileSprite();
     }
 
     public void Click() {
@@ -53,7 +47,7 @@ public class Tile : MonoBehaviour {
         if (bottomWaifuSprite) {
             image.sprite = bottomWaifuSprite;
         } else {
-            image.sprite = bottomBasicSprite;
+            image.sprite = selectedTileSprite;
         }
         WaifuScriptableObject tempWaifu = waifu;
         int tempGroupId = id;
@@ -74,9 +68,7 @@ public class Tile : MonoBehaviour {
         id = tileGroupId;
         OnSetWaifu?.Invoke(id);
         if (waifu != null) {
-            //topWaifuSprite = value.enabledSprite;
             bottomWaifuSprite = value.disabledSprite;
-            //image.sprite = topWaifuSprite;
         }
     }
 
@@ -86,5 +78,10 @@ public class Tile : MonoBehaviour {
 
     public int GetId() {
         return id;
+    }
+
+    void LoadRandomTileSprite() {
+        int randomIndex = Random.Range(0, tileSprites.Count);
+        image.sprite = tileSprites[randomIndex];
     }
 }

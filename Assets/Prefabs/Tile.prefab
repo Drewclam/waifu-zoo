@@ -90,14 +90,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   col: 0
   row: 0
-  bottomBasicSprite: {fileID: 21300000, guid: 7f1a5cfe81d3a7b41b4f997198da1dd5, type: 3}
-  topBasicSprite: {fileID: 21300000, guid: 08f6f4bd8ce1570418eae132e50f9dde, type: 3}
-  bottomAppleSprite: {fileID: 0}
-  topAppleSprite: {fileID: 21300000, guid: 7535ab1daa111874dac4a14f2fd768f0, type: 3}
-  bottomCoinSprite: {fileID: 0}
-  topCoinSprite: {fileID: 21300000, guid: 8ada3938c16a80749891ecbbf7e6559b, type: 3}
-  bottomSockSprite: {fileID: 0}
-  topSockSprite: {fileID: 21300000, guid: 24e7e1f8d1ae7c34db5a06cf34f1a4fe, type: 3}
+  selectedTileSprite: {fileID: 21300000, guid: 7f1a5cfe81d3a7b41b4f997198da1dd5, type: 3}
+  defaultTileSprite: {fileID: 21300000, guid: 08f6f4bd8ce1570418eae132e50f9dde, type: 3}
+  tileSprites:
+  - {fileID: 21300000, guid: 7535ab1daa111874dac4a14f2fd768f0, type: 3}
+  - {fileID: 21300000, guid: 8ada3938c16a80749891ecbbf7e6559b, type: 3}
+  - {fileID: 21300000, guid: 24e7e1f8d1ae7c34db5a06cf34f1a4fe, type: 3}
+  - {fileID: 21300000, guid: 08f6f4bd8ce1570418eae132e50f9dde, type: 3}
 --- !u!114 &8262036699490343072
 MonoBehaviour:
   m_ObjectHideFlags: 0
