@@ -78,7 +78,7 @@ public class PuzzleManager : MonoBehaviour {
         OnPuzzleChange?.Invoke(waifusToSpawn);
 
         if (totalWaifuRemaining < 1) {
-            SceneManager.LoadScene("Win Room");
+            ExitPuzzle();
         }
     }
 
