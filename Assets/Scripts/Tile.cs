@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class Tile : MonoBehaviour {
     public delegate void TileClickAction(WaifuScriptableObject waifu, int groupId);
     public static event TileClickAction OnTileClick;
+    public delegate void SetWaifuAction(int groupId);
+    public static event SetWaifuAction OnSetWaifu;
     public int col;
     public int row;
     bool selected = false;
@@ -50,6 +52,8 @@ public class Tile : MonoBehaviour {
 
         if (bottomWaifuSprite) {
             image.sprite = bottomWaifuSprite;
+        } else {
+            image.sprite = bottomBasicSprite;
         }
         WaifuScriptableObject tempWaifu = waifu;
         int tempGroupId = id;
@@ -68,11 +72,11 @@ public class Tile : MonoBehaviour {
     public void SetWaifu(WaifuScriptableObject value, int tileGroupId) {
         waifu = value;
         id = tileGroupId;
-        GetComponent<DebugId>().SetId(id);
+        OnSetWaifu?.Invoke(id);
         if (waifu != null) {
-            topWaifuSprite = value.enabledSprite;
+            //topWaifuSprite = value.enabledSprite;
             bottomWaifuSprite = value.disabledSprite;
-            image.sprite = topWaifuSprite;
+            //image.sprite = topWaifuSprite;
         }
     }
 

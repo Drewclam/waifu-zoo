@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 1008193359081607961}
   - component: {fileID: 3059932368024297663}
   - component: {fileID: 8262036699490343072}
-  - component: {fileID: 3293202615866725836}
   m_Layer: 5
   m_Name: Tile
   m_TagString: Untagged
@@ -153,19 +152,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &3293202615866725836
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1008193359081607963}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6379230fd4499ea439377d3d218e4093, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  text: {fileID: 3757682656520445}
 --- !u!1 &8256314746955251031
 GameObject:
   m_ObjectHideFlags: 0
@@ -177,6 +163,7 @@ GameObject:
   - component: {fileID: 5814033697227867351}
   - component: {fileID: 2574766288342095337}
   - component: {fileID: 3757682656520445}
+  - component: {fileID: 4168315989270603345}
   m_Layer: 5
   m_Name: Id Debug
   m_TagString: Untagged
@@ -243,3 +230,16 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Id Debug
+--- !u!114 &4168315989270603345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8256314746955251031}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6379230fd4499ea439377d3d218e4093, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: {fileID: 3757682656520445}
